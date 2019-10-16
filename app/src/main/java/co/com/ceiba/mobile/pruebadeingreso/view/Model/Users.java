@@ -1,11 +1,14 @@
 package co.com.ceiba.mobile.pruebadeingreso.view.Model;
 
+import android.widget.Button;
+
 public class Users {
     private  int id;
     private String name;
     private String username;
     private String email;
     private String phone;
+
 
     public Users(int id, String name, String username, String email, String phone) {
         this.id = id;

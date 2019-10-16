@@ -30,26 +30,14 @@ public class MyAdapter  extends RecyclerView.Adapter<MyAdapter.ViewHolderDatos> 
         TextView name;
         TextView phone;
         TextView email;
-        Users users = new Users(1,"ss","ss","yy@","88099");
+        Button button;
 
         public ViewHolderDatos(View itemView) {
             super(itemView);
-
             name = itemView.findViewById(R.id.name);
             phone = itemView.findViewById(R.id.phone);
             email = itemView.findViewById(R.id.email);
             button = itemView.findViewById(R.id.btn_view_post);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), PostActivity.class);
-                    intent.putExtra("name", users.getName() );
-                    intent.putExtra("email", users.getEmail());
-                    intent.putExtra("phone", users.getPhone());
-                    v.getContext().startActivity(intent);
-                }
-            });
         }
 
         public void asignarDatos(Users users) {
@@ -74,7 +62,19 @@ public class MyAdapter  extends RecyclerView.Adapter<MyAdapter.ViewHolderDatos> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderDatos holder, int position) {
+        final Users users = usersList.get(position);
         holder.asignarDatos(usersList.get(position));
+        holder.button.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PostActivity.class);
+                intent.putExtra("name", users.getName() );
+                intent.putExtra("email", users.getEmail());
+                intent.putExtra("phone", users.getPhone());
+                intent.putExtra("userId", users.getId());
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -88,9 +88,8 @@ public class MyAdapter  extends RecyclerView.Adapter<MyAdapter.ViewHolderDatos> 
     private Filter usersFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-
             List<Users> filteredList = new ArrayList<>();
-            if(constraint == null || constraint.length()==0){
+            if(constraint == null || constraint.length() == 0){
                 filteredList.addAll(usersListFull);
             } else {
                 String filerPattern = constraint.toString().toLowerCase().trim();
@@ -105,12 +104,13 @@ public class MyAdapter  extends RecyclerView.Adapter<MyAdapter.ViewHolderDatos> 
             return results;
         }
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+     @Override
+    protected void publishResults(CharSequence constraint, FilterResults results) {
         usersList.clear();
         usersList.addAll((List) results.values);
+
         notifyDataSetChanged();
-        }
-    };
+    }
+};
 }
 
