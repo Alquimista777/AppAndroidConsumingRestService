@@ -28,7 +28,7 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/namePosts"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

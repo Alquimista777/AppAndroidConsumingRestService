@@ -6,6 +6,7 @@ import co.com.ceiba.mobile.pruebadeingreso.view.Model.Posts;
 import co.com.ceiba.mobile.pruebadeingreso.view.Model.Users;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface JsonPlaceHolderApi {
 
@@ -14,4 +15,7 @@ public interface JsonPlaceHolderApi {
 
     @GET("posts")
     Call<List<Posts>> getPost();
+
+    @GET("posts")
+    Call<List<Posts>> getPostByUser(@Query("userId") int id);
 }

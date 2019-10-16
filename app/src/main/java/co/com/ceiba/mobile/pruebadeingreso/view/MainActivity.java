@@ -1,11 +1,17 @@
 package co.com.ceiba.mobile.pruebadeingreso.view;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.EditText;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Button;
 
 import java.util.List;
 import co.com.ceiba.mobile.pruebadeingreso.R;
@@ -18,10 +24,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends Activity {
+
+public class MainActivity extends AppCompatActivity {
     private RecyclerView myRecyclerView;
-    private EditText mJsonTxtView;
-    
+    private List<Users> usersList;
+    private MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +36,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         myRecyclerView = findViewById(R.id.recyclerViewSearchResults);
-       /* mJsonTxtView = findViewById(R.id.mJsonTxtView);*/
-        myRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        myRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         getPosts();
     }
 
@@ -42,8 +48,6 @@ public class MainActivity extends Activity {
 
         JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
         Call<List<Users>> userCall = jsonPlaceHolderApi.getUsers();
-        Call<List<Posts>> call = jsonPlaceHolderApi.getPost();
-
         userCall.enqueue(new Callback<List<Users>>() {
             @Override
             public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
@@ -51,44 +55,40 @@ public class MainActivity extends Activity {
                    /* mJsonTxtView.setText("Codigo: " + response.code());*/
                     return;
                 }
-
-                List<Users> usersList = response.body();
-                MyAdapter myAdapter = new MyAdapter(usersList);
+                usersList = response.body();
+                myAdapter = new MyAdapter(usersList);
                 myRecyclerView.setAdapter(myAdapter);
             }
 
             @Override
             public void onFailure(Call<List<Users>> call, Throwable t) {
-                /*  mJsonTxtView.setText(t.getMessage());*/
-            }
-        });
 
-        call.enqueue(new Callback<List<Posts>>() {
-            @Override
-            public void onResponse(Call<List<Posts>> call, Response<List<Posts>> response) {
-                if(!response.isSuccessful()){
-                   /* mJsonTxtView.setText("Codigo: " + response.code());*/
-                    return;
-                }
-
-                List<Posts> postList = response.body();
-
-               /* for(Posts post: postList){
-                    String content = "";
-                    content += "userId:"+ post.getUserId() + "\n";
-                    content += "id:"+ post.getId() + "\n";
-                    content += "title"+ post.getTitle() + "\n";
-                    content += "body:"+ post.getBody() + "\n\n";
-                    mJsonTxtView.append(content);
-                }*/
-            }
-
-            @Override
-            public void onFailure(Call<List<Posts>> call, Throwable t) {
-               /* mJsonTxtView.setText(t.getMessage());*/
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                myAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
+
 
     @Override
     protected void onStart() {

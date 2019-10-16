@@ -1,26 +1,11 @@
 package co.com.ceiba.mobile.pruebadeingreso.view.Model;
 
 public class Posts {
-    private int userId;
-    private int id;
+
     private String title;
     private String body;
 
-    public int getUserId() {
-        return userId;
-    }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

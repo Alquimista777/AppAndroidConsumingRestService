@@ -28,6 +28,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation'com.miguelcatalan:materialsearchview:1.4.0'
     implementation 'com.squareup.retrofit2:retrofit:(insert latest version)'
     implementation 'com.squareup.retrofit2:converter-gson'
     implementation 'com.android.support:appcompat-v7:27.1.1'
